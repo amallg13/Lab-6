@@ -118,3 +118,70 @@ button:disabled {
         height: 260px;
     }
 }
+/* Cat statistics */
+
+.stats {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    color: #917c84;
+    font-size: 13px;
+}
+
+.stats strong {
+    color: #d58b9b;
+}
+
+/* Extra interaction buttons */
+
+.extra-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.extra-buttons button {
+    font-size: 12px;
+    padding: 12px 18px;
+    background-color: #f7dce2;
+    color: #865967;
+}
+
+.extra-buttons button:hover {
+    background-color: #efc3ce;
+}
+
+.extra-buttons button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Dark theme */
+
+body.dark-mode {
+    background-color: #39313e;
+    color: #ffffff;
+}
+
+body.dark-mode .container {
+    background-color: #514657;
+}
+
+body.dark-mode h1 {
+    color: #fff0f4;
+}
+
+body.dark-mode .description,
+body.dark-mode .stats {
+    color: #e0cbd5;
+}
+
+body.dark-mode .cat-container {
+    background-color: #66596d;
+}
+
+body.dark-mode .footer {
+    color: #d0bdcf;
+}

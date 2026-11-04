@@ -4,15 +4,25 @@ const loading = document.getElementById("loading");
 const button = document.getElementById("new-cat-btn");
 const errorMessage = document.getElementById("error-message");
 
-// Function to fetch a random cat
+const catCount = document.getElementById("cat-count");
+const likeCount = document.getElementById("like-count");
+const likeButton = document.getElementById("like-btn");
+const themeButton = document.getElementById("theme-btn");
+
+let discoveredCats = 0;
+let likedCats = 0;
+let currentCatLiked = false;
+
+// Fetch a random cat
 async function getRandomCat() {
 
-    // Show loading message
     loading.style.display = "block";
     loading.textContent = "Finding your cat...";
     catImage.style.display = "none";
     errorMessage.textContent = "";
+
     button.disabled = true;
+    likeButton.disabled = true;
 
     try {
 
@@ -21,48 +31,90 @@ async function getRandomCat() {
             "https://api.thecatapi.com/v1/images/search"
         );
 
-        // Check if the request was successful
         if (!response.ok) {
             throw new Error("Something went wrong!");
         }
 
-        // Convert the response into JSON
+        // Convert response into JSON
         const data = await response.json();
 
-        // Get the image URL from the API response
+        // Get the image URL
         const imageURL = data[0].url;
 
-        // Create an image and wait for it to load
+        // Load the image before displaying it
         const newImage = new Image();
-        newImage.src = imageURL;
 
-        newImage.onload = function() {
-            catImage.src = imageURL;
-            catImage.style.display = "block";
-            loading.style.display = "none";
-            button.disabled = false;
-        };
+        await new Promise((resolve, reject) => {
+            newImage.onload = resolve;
+            newImage.onerror = reject;
+            newImage.src = imageURL;
+        });
 
-        newImage.onerror = function() {
-            throw new Error("Could not load the image.");
-        };
+        // Update the webpage
+        catImage.src = imageURL;
+        catImage.style.display = "block";
+        loading.style.display = "none";
+
+        // Update cat counter
+        discoveredCats++;
+        catCount.textContent = discoveredCats;
+
+        // Reset like button for the new cat
+        currentCatLiked = false;
+        likeButton.textContent = "♡ Like this cat";
+
+        button.disabled = false;
+        likeButton.disabled = false;
 
     } catch (error) {
 
-        // Display an error if something fails
         loading.style.display = "none";
+
         errorMessage.textContent =
             "Oops! Couldn't find a cat. Please try again.";
 
         button.disabled = false;
 
         console.log(error);
-
     }
 }
 
-// Run the function when the button is clicked
+// Main button: Get another cat
 button.addEventListener("click", getRandomCat);
 
-// Automatically load a cat when the page opens
+// Like button interaction
+likeButton.addEventListener("click", function() {
+
+    if (currentCatLiked) {
+
+        likedCats--;
+        currentCatLiked = false;
+        likeButton.textContent = "♡ Like this cat";
+
+    } else {
+
+        likedCats++;
+        currentCatLiked = true;
+        likeButton.textContent = "♥ Liked!";
+
+    }
+
+    likeCount.textContent = likedCats;
+
+});
+
+// Change between light and dark themes
+themeButton.addEventListener("click", function() {
+
+    document.body.classList.toggle("dark-mode");
+
+    if (document.body.classList.contains("dark-mode")) {
+        themeButton.textContent = "☀ Light Theme";
+    } else {
+        themeButton.textContent = "☾ Change Theme";
+    }
+
+});
+
+// Load the first cat automatically
 getRandomCat();
